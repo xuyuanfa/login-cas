@@ -1,0 +1,159 @@
+CAS实现单点登录
+
+一、配置cas服务端tomcat的https和cas客户端证书
+1、生成密钥
+> keytool -genkey -alias vitor -keyalg RSA -keystore ./vitorkey
+#您的名字与姓氏是什么? 输入域名：sso.vitor.com
+
+2、导出证书
+> keytool -export -file E:\environment\keys\vitor.crt -alias vitor -keystore ./vitorkey
+
+3、导入证书到cas客户端的JVM
+> keytool -import -keystore "C:\Program Files\Java\jdk1.7.0_79\jre\lib\security\cacerts" -file ./vitor.crt -alias vitor
+#默认密码：changeit
+
+4、配置hosts，虚拟域名
+127.0.0.1  sso.vitor.com
+
+5、修改tomcat的conf/server.xml，配置https
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol"
+        maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
+        clientAuth="false" sslProtocol="TLS" 
+	keystoreFile="E:/environment/keys/vitorkey" keystorePass="123456" />
+
+6、至此，tomcat可使用https访问，启动tomcat，访问测试
+https://sso.vitor.com:8443/
+
+二、配置CAS服务端
+1、CAS服务端下载
+cas-server-4.0.0-release.zip
+http://developer.jasig.org/cas/
+
+或下载源码自行构建
+https://github.com/apereo/cas/releases/tag/v4.0.1
+mvn package -pl cas-server-webapp,cas-server-support-jdbc
+
+2、部署
+拷贝CAS的/modules/cas-server-webapp-4.0.0.war到tomcat的\webapps\，更名为cas.war
+
+3、访问登录
+https://sso.vitor.com:8443/cas/login
+#默认测试账号密码在tomcat/webapp/cas/WEB-INF/deployerConfigContext.xml的bean中primaryAuthenticationHandler
+    <bean id="primaryAuthenticationHandler"
+          class="org.jasig.cas.authentication.AcceptUsersAuthenticationHandler">
+        <property name="users">
+            <map>
+                <entry key="admin" value="admin"/>
+            </map>
+        </property>
+    </bean>
+
+4、登出
+https://sso.vitor.com:8443/cas/logout
+
+
+三、安装mysql
+1、下载mysql
+
+2、配置mysql
+复制my-default.ini，改名为my.ini，修改内容为
+[client]
+port=3306
+default-character-set=utf8
+[mysqld]
+port=3306
+character_set_server=utf8
+basedir=E:\environment\mysql-5.7.12-winx64
+#解压目录
+datadir=E:\environment\mysql-5.7.12-winx64\data
+#解压目录下data目录
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+[WinMySQLAdmin]
+E:\environment\mysql-5.7.12-winx64\bin\mysqld.exe
+
+3、配置环境变量
+添加
+MYSQL_HOME E:\environment\mysql-5.7.12-winx64
+追加
+Path %MYSQL_HOME%\bin;
+
+4、注册windows服务
+mysqld install MySQL --defaults-file="E:\environment\mysql-5.7.12-winx64\my.ini"
+#移除服务命令为：mysqld remove
+
+5、启动服务
+net start mysql
+#如果目录中没有data目录，需要初始化
+mysqld  --initialize
+
+6、登录修改密码
+用户：root
+密码：随机，在data/主机名.err中可以找到
+>mysql -uroot -p
+修改密码
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+
+四、配置数据库验证
+1、修改配置CAS的/WEB-INF/deployerConfigContext.xml
+注释primaryAuthenticationHandler的bean，添加以下bean
+	<bean id="primaryAuthenticationHandler" 
+			class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sql" value="select password from t_admin_user where login_name = ? "/>
+		<property name="passwordEncoder" ref="MD5PasswordEncoder"/>
+	</bean>
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>com.mysql.jdbc.Driver</value></property>
+		<property name="url"><value>jdbc:mysql://127.0.0.1:3306/cas</value></property>
+		<property name="username"><value>root</value></property>
+		<property name="password"><value>root</value></property>
+	</bean>
+
+	<bean id="MD5PasswordEncoder" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder">
+		<constructor-arg index="0"><value>MD5</value></constructor-arg>
+	</bean>
+
+2、创建数据库表
+create table t_admin_user (
+	id int not NULL auto_increment,
+	email varchar (255),
+	loginName varchar (255) NOT NULL UNIQUE,
+	name varchar (255),
+	password varchar (255),
+	primary key (id)
+) ENGINE = INNODB;
+
+3、添加记录
+如果使用了MD5PasswordEncoder，密码需要MD5值
+
+4、至此，重启tomcat，访问成功，CAS服务端配置完毕。
+
+五、配置CAS客户端
+1、创建maven项目
+login-client
+login-client2
+
+2、配置hosts，虚拟域名
+127.0.0.1  1.com
+127.0.0.1  2.com
+
+3、配置pom.xml
+	<dependency>
+		<groupId>org.jasig.cas.client</groupId>
+		<artifactId>cas-client-core</artifactId>
+		<version>3.2.1</version>
+	</dependency>
+
+4。配置web.xml
+#参考github项目
+#参考http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html
+#参考http://www.cnblogs.com/vhua/p/cas_1.html
+
+5、登录，登出
+http://1.com:8081/login-client/
+http://2.com:8082/login-client2/
+https://sso.vitor.com:8443/cas/logout
+
+6、完毕
+实际使用中，CAS服务端单独部署，并修改登录展示页面，CAS客户端仅需修改web.xml和pom.xml，登出
