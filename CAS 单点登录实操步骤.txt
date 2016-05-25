@@ -127,7 +127,11 @@ create table t_admin_user (
 3、添加记录
 如果使用了MD5PasswordEncoder，密码需要MD5值
 
-4、至此，重启tomcat，访问成功，CAS服务端配置完毕。
+4、添加数据库支持包到\WEB-INF\lib
+cas-server-support-jdbc-4.0.0.jar
+mysql-connector-java-5.1.39-bin.jar
+
+5、至此，重启tomcat，访问成功，CAS服务端配置完毕。
 
 五、配置CAS客户端
 1、创建maven项目
