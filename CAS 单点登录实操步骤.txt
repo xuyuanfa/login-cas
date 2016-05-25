@@ -1,44 +1,44 @@
-CASÊµÏÖµ¥µãµÇÂ¼
+CASå®ç°å•ç‚¹ç™»å½•
 
-Ò»¡¢ÅäÖÃcas·şÎñ¶ËtomcatµÄhttpsºÍcas¿Í»§¶ËÖ¤Êé
-1¡¢Éú³ÉÃÜÔ¿
+ä¸€ã€é…ç½®casæœåŠ¡ç«¯tomcatçš„httpså’Œcaså®¢æˆ·ç«¯è¯ä¹¦
+1ã€ç”Ÿæˆå¯†é’¥
 > keytool -genkey -alias vitor -keyalg RSA -keystore ./vitorkey
-#ÄúµÄÃû×ÖÓëĞÕÊÏÊÇÊ²Ã´? ÊäÈëÓòÃû£ºsso.vitor.com
+#æ‚¨çš„åå­—ä¸å§“æ°æ˜¯ä»€ä¹ˆ? è¾“å…¥åŸŸåï¼šsso.vitor.com
 
-2¡¢µ¼³öÖ¤Êé
+2ã€å¯¼å‡ºè¯ä¹¦
 > keytool -export -file E:\environment\keys\vitor.crt -alias vitor -keystore ./vitorkey
 
-3¡¢µ¼ÈëÖ¤Êéµ½cas¿Í»§¶ËµÄJVM
+3ã€å¯¼å…¥è¯ä¹¦åˆ°caså®¢æˆ·ç«¯çš„JVM
 > keytool -import -keystore "C:\Program Files\Java\jdk1.7.0_79\jre\lib\security\cacerts" -file ./vitor.crt -alias vitor
-#Ä¬ÈÏÃÜÂë£ºchangeit
+#é»˜è®¤å¯†ç ï¼šchangeit
 
-4¡¢ÅäÖÃhosts£¬ĞéÄâÓòÃû
+4ã€é…ç½®hostsï¼Œè™šæ‹ŸåŸŸå
 127.0.0.1  sso.vitor.com
 
-5¡¢ĞŞ¸ÄtomcatµÄconf/server.xml£¬ÅäÖÃhttps
+5ã€ä¿®æ”¹tomcatçš„conf/server.xmlï¼Œé…ç½®https
     <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol"
         maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
         clientAuth="false" sslProtocol="TLS" 
 	keystoreFile="E:/environment/keys/vitorkey" keystorePass="123456" />
 
-6¡¢ÖÁ´Ë£¬tomcat¿ÉÊ¹ÓÃhttps·ÃÎÊ£¬Æô¶¯tomcat£¬·ÃÎÊ²âÊÔ
+6ã€è‡³æ­¤ï¼Œtomcatå¯ä½¿ç”¨httpsè®¿é—®ï¼Œå¯åŠ¨tomcatï¼Œè®¿é—®æµ‹è¯•
 https://sso.vitor.com:8443/
 
-¶ş¡¢ÅäÖÃCAS·şÎñ¶Ë
-1¡¢CAS·şÎñ¶ËÏÂÔØ
+äºŒã€é…ç½®CASæœåŠ¡ç«¯
+1ã€CASæœåŠ¡ç«¯ä¸‹è½½
 cas-server-4.0.0-release.zip
 http://developer.jasig.org/cas/
 
-»òÏÂÔØÔ´Âë×ÔĞĞ¹¹½¨
+æˆ–ä¸‹è½½æºç è‡ªè¡Œæ„å»º
 https://github.com/apereo/cas/releases/tag/v4.0.1
 mvn package -pl cas-server-webapp,cas-server-support-jdbc
 
-2¡¢²¿Êğ
-¿½±´CASµÄ/modules/cas-server-webapp-4.0.0.warµ½tomcatµÄ\webapps\£¬¸üÃûÎªcas.war
+2ã€éƒ¨ç½²
+æ‹·è´CASçš„/modules/cas-server-webapp-4.0.0.waråˆ°tomcatçš„\webapps\ï¼Œæ›´åä¸ºcas.war
 
-3¡¢·ÃÎÊµÇÂ¼
+3ã€è®¿é—®ç™»å½•
 https://sso.vitor.com:8443/cas/login
-#Ä¬ÈÏ²âÊÔÕËºÅÃÜÂëÔÚtomcat/webapp/cas/WEB-INF/deployerConfigContext.xmlµÄbeanÖĞprimaryAuthenticationHandler
+#é»˜è®¤æµ‹è¯•è´¦å·å¯†ç åœ¨tomcat/webapp/cas/WEB-INF/deployerConfigContext.xmlçš„beanä¸­primaryAuthenticationHandler
     <bean id="primaryAuthenticationHandler"
           class="org.jasig.cas.authentication.AcceptUsersAuthenticationHandler">
         <property name="users">
@@ -48,15 +48,15 @@ https://sso.vitor.com:8443/cas/login
         </property>
     </bean>
 
-4¡¢µÇ³ö
+4ã€ç™»å‡º
 https://sso.vitor.com:8443/cas/logout
 
 
-Èı¡¢°²×°mysql
-1¡¢ÏÂÔØmysql
+ä¸‰ã€å®‰è£…mysql
+1ã€ä¸‹è½½mysql
 
-2¡¢ÅäÖÃmysql
-¸´ÖÆmy-default.ini£¬¸ÄÃûÎªmy.ini£¬ĞŞ¸ÄÄÚÈİÎª
+2ã€é…ç½®mysql
+å¤åˆ¶my-default.iniï¼Œæ”¹åä¸ºmy.iniï¼Œä¿®æ”¹å†…å®¹ä¸º
 [client]
 port=3306
 default-character-set=utf8
@@ -64,38 +64,38 @@ default-character-set=utf8
 port=3306
 character_set_server=utf8
 basedir=E:\environment\mysql-5.7.12-winx64
-#½âÑ¹Ä¿Â¼
+#è§£å‹ç›®å½•
 datadir=E:\environment\mysql-5.7.12-winx64\data
-#½âÑ¹Ä¿Â¼ÏÂdataÄ¿Â¼
+#è§£å‹ç›®å½•ä¸‹dataç›®å½•
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 [WinMySQLAdmin]
 E:\environment\mysql-5.7.12-winx64\bin\mysqld.exe
 
-3¡¢ÅäÖÃ»·¾³±äÁ¿
-Ìí¼Ó
+3ã€é…ç½®ç¯å¢ƒå˜é‡
+æ·»åŠ 
 MYSQL_HOME E:\environment\mysql-5.7.12-winx64
-×·¼Ó
+è¿½åŠ 
 Path %MYSQL_HOME%\bin;
 
-4¡¢×¢²áwindows·şÎñ
+4ã€æ³¨å†ŒwindowsæœåŠ¡
 mysqld install MySQL --defaults-file="E:\environment\mysql-5.7.12-winx64\my.ini"
-#ÒÆ³ı·şÎñÃüÁîÎª£ºmysqld remove
+#ç§»é™¤æœåŠ¡å‘½ä»¤ä¸ºï¼šmysqld remove
 
-5¡¢Æô¶¯·şÎñ
+5ã€å¯åŠ¨æœåŠ¡
 net start mysql
-#Èç¹ûÄ¿Â¼ÖĞÃ»ÓĞdataÄ¿Â¼£¬ĞèÒª³õÊ¼»¯
+#å¦‚æœç›®å½•ä¸­æ²¡æœ‰dataç›®å½•ï¼Œéœ€è¦åˆå§‹åŒ–
 mysqld  --initialize
 
-6¡¢µÇÂ¼ĞŞ¸ÄÃÜÂë
-ÓÃ»§£ºroot
-ÃÜÂë£ºËæ»ú£¬ÔÚdata/Ö÷»úÃû.errÖĞ¿ÉÒÔÕÒµ½
+6ã€ç™»å½•ä¿®æ”¹å¯†ç 
+ç”¨æˆ·ï¼šroot
+å¯†ç ï¼šéšæœºï¼Œåœ¨data/ä¸»æœºå.errä¸­å¯ä»¥æ‰¾åˆ°
 >mysql -uroot -p
-ĞŞ¸ÄÃÜÂë
+ä¿®æ”¹å¯†ç 
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 
-ËÄ¡¢ÅäÖÃÊı¾İ¿âÑéÖ¤
-1¡¢ĞŞ¸ÄÅäÖÃCASµÄ/WEB-INF/deployerConfigContext.xml
-×¢ÊÍprimaryAuthenticationHandlerµÄbean£¬Ìí¼ÓÒÔÏÂbean
+å››ã€é…ç½®æ•°æ®åº“éªŒè¯
+1ã€ä¿®æ”¹é…ç½®CASçš„/WEB-INF/deployerConfigContext.xml
+æ³¨é‡ŠprimaryAuthenticationHandlerçš„beanï¼Œæ·»åŠ ä»¥ä¸‹bean
 	<bean id="primaryAuthenticationHandler" 
 			class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
 		<property name="dataSource" ref="dataSource"/>
@@ -114,7 +114,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 		<constructor-arg index="0"><value>MD5</value></constructor-arg>
 	</bean>
 
-2¡¢´´½¨Êı¾İ¿â±í
+2ã€åˆ›å»ºæ•°æ®åº“è¡¨
 create table t_admin_user (
 	id int not NULL auto_increment,
 	email varchar (255),
@@ -124,36 +124,38 @@ create table t_admin_user (
 	primary key (id)
 ) ENGINE = INNODB;
 
-3¡¢Ìí¼Ó¼ÇÂ¼
-Èç¹ûÊ¹ÓÃÁËMD5PasswordEncoder£¬ÃÜÂëĞèÒªMD5Öµ
+3ã€æ·»åŠ è®°å½•
+å¦‚æœä½¿ç”¨äº†MD5PasswordEncoderï¼Œå¯†ç éœ€è¦MD5å€¼
 
-4¡¢ÖÁ´Ë£¬ÖØÆôtomcat£¬·ÃÎÊ³É¹¦£¬CAS·şÎñ¶ËÅäÖÃÍê±Ï¡£
+4ã€è‡³æ­¤ï¼Œé‡å¯tomcatï¼Œè®¿é—®æˆåŠŸï¼ŒCASæœåŠ¡ç«¯é…ç½®å®Œæ¯•ã€‚
 
-Îå¡¢ÅäÖÃCAS¿Í»§¶Ë
-1¡¢´´½¨mavenÏîÄ¿
+äº”ã€é…ç½®CASå®¢æˆ·ç«¯
+1ã€åˆ›å»ºmavené¡¹ç›®
 login-client
 login-client2
 
-2¡¢ÅäÖÃhosts£¬ĞéÄâÓòÃû
+2ã€é…ç½®hostsï¼Œè™šæ‹ŸåŸŸå
 127.0.0.1  1.com
 127.0.0.1  2.com
 
-3¡¢ÅäÖÃpom.xml
+3ã€é…ç½®pom.xml
 	<dependency>
 		<groupId>org.jasig.cas.client</groupId>
 		<artifactId>cas-client-core</artifactId>
 		<version>3.2.1</version>
 	</dependency>
 
-4¡£ÅäÖÃweb.xml
-#²Î¿¼githubÏîÄ¿
-#²Î¿¼http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html
-#²Î¿¼http://www.cnblogs.com/vhua/p/cas_1.html
+4ã€‚é…ç½®web.xml
+#å‚è€ƒgithubé¡¹ç›®
+#å‚è€ƒhttp://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html
+#å‚è€ƒhttp://www.cnblogs.com/vhua/p/cas_1.html
 
-5¡¢µÇÂ¼£¬µÇ³ö
+5ã€ç™»å½•ï¼Œç™»å‡º
 http://1.com:8081/login-client/
 http://2.com:8082/login-client2/
 https://sso.vitor.com:8443/cas/logout
 
-6¡¢Íê±Ï
-Êµ¼ÊÊ¹ÓÃÖĞ£¬CAS·şÎñ¶Ëµ¥¶À²¿Êğ£¬²¢ĞŞ¸ÄµÇÂ¼Õ¹Ê¾Ò³Ãæ£¬CAS¿Í»§¶Ë½öĞèĞŞ¸Äweb.xmlºÍpom.xml£¬µÇ³ö
+6ã€å®Œæ¯•
+å®é™…ä½¿ç”¨ä¸­ï¼ŒCASæœåŠ¡ç«¯å•ç‹¬éƒ¨ç½²ï¼Œå¹¶ä¿®æ”¹ç™»å½•å±•ç¤ºé¡µé¢ï¼ŒCASå®¢æˆ·ç«¯ä»…éœ€ä¿®æ”¹web.xmlå’Œpom.xmlï¼Œç™»å‡ºéœ€é“¾æ¥åˆ°CASç™»å‡ºåœ°å€
+
+
