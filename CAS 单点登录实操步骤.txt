@@ -99,7 +99,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 	<bean id="primaryAuthenticationHandler" 
 			class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="sql" value="select password from t_admin_user where login_name = ? "/>
+		<property name="sql" value="select password from t_admin_user where loginName = ? "/>
 		<property name="passwordEncoder" ref="MD5PasswordEncoder"/>
 	</bean>
 
